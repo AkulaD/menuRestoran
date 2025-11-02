@@ -1,3 +1,7 @@
+<?php 
+    include 'config.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,5 +56,8 @@
         </section>
         
      </main>
+    <footer>
+        <p>Version: <?php echo $version_info; ?></p>
+    </footer>
 </body>
 </html>
