@@ -14,10 +14,10 @@
         <section class="container-nav">
             <div class="left-nav">
                 <ul>
-                    <li><a href="dashboard.html">Home</a></li>
-                    <li><a href="order.html">Order</a></li>
-                    <li><a href="menu.html">Menu</a></li>
-                    <li><a href="History.html">History</a></li>
+                    <li><a href="dashboard.php">Home</a></li>
+                    <li><a href="order.php">Order</a></li>
+                    <li><a href="menu.php">Menu</a></li>
+                    <li><a href="History.php">History</a></li>
                 </ul>
             </div>
             <div class="right-nav">
