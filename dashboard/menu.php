@@ -55,7 +55,10 @@ $result = $conn->query($query);
                                 <p>Status: <?php echo $row['Tersedia'] ? 'Tersedia' : 'Habis'; ?></p>
                                 <p>Aksi: 
                                     <a href="edit-menu.php?id=<?php echo $row['MenuID']; ?>">Edit</a> | 
-                                    <a href="../php/delete-menu.php?id=<?php echo $row['MenuID']; ?>" onclick="return confirm('Yakin ingin menghapus menu ini?')">Hapus</a>
+                                    <a href="../php/change-status-menu.php?id=<?php echo $row['MenuID']; ?>">
+                                        <?php echo $row['Tersedia'] ? 'Tidak Tersedia' : 'Tersedia'; ?>
+                                    </a> | 
+                                    <a href="../php/delete-menu.php?id=<?php echo $row['MenuID']; ?>">Hapus</a>
                                 </p>
                             </div>
                         </div>
