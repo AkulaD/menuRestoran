@@ -23,14 +23,16 @@ if (isset($users[$username]) && $users[$username]['password'] === $password) {
         header('Location: ../dashboard/dashboard.php');
         exit;
     } elseif ($level == 1) {
-        header('Location: ../menu/index.html');
+        header('Location: ../menu/index.php');
         exit;
     } else {
         echo "<script>alert('Level tidak dikenali!'); window.history.back();</script>";
+        header('Location: ../index.html');
         exit;
     }
 } else {
     echo "<script>alert('Username atau Password salah!'); window.history.back();</script>";
+    header('Location: ../index.html');
     exit;
 }
 ?>

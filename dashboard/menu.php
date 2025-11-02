@@ -1,11 +1,12 @@
 <?php 
 include '../php/config.php';
-
 session_start();
 if (!isset($_SESSION['username'])) {
     header('location: ../index.html');
     exit;
 }
+$query = "SELECT * FROM Menu ORDER BY WaktuTambah DESC";
+$result = $conn->query($query);
 ?>
 
 <!DOCTYPE html>
@@ -33,35 +34,39 @@ if (!isset($_SESSION['username'])) {
             </div>
         </section>
     </nav>
-    <!-- Main -->
-     <main>
+
+    <main>
         <section class="menu-container">
             <ul>
-                <li>
-                    <h1>List Menu</h1>
-                </li>
-                <li>
-                    <a href="input-menu.html">Add Menu Item</a>
-                </li>
-            </ul>            
+                <li><h1>List Menu</h1></li>
+                <li><a href="input-menu.php">Add Menu Item</a></li>
+            </ul>
             <div class="menu-list">
-                <!-- Menu items will be dynamically inserted here -->
-                 <div class="menu-content">
-                    <img src="data/img/menu-img/gambar1.jpg" alt="gambar1">
-                    <div class="menu-desc">
-                        <h2>Menu 1</h2>
-                        <p>Descripsi : Menu 1 adalah hidangan lezat yang terbuat dari bahan-bahan segar.</p>
-                        <p>tersedia</p>
-                        <p>Harga: $10.00</p>
-                        <p>waktu tambah: 12:00 PM</p>
-                        <p>status: tersedia</p>
-                        <p>aksi: <a href="edit-order.html">Edit</a> | <a href="delete-order.html">Hapus</a></p>
-                    </div>
-                </div>
+                <?php if ($result && $result->num_rows > 0): ?>
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                        <div class="menu-content">
+                            <img src="../<?php echo htmlspecialchars($row['GambarURL']); ?>" alt="<?php echo htmlspecialchars($row['Nama']); ?>" width="150">
+                            <div class="menu-desc">
+                                <h2><?php echo htmlspecialchars($row['Nama']); ?></h2>
+                                <p>Deskripsi: <?php echo htmlspecialchars($row['Deskripsi']); ?></p>
+                                <p>Kategori: <?php echo htmlspecialchars($row['Kategori']); ?></p>
+                                <p>Harga: Rp<?php echo number_format($row['Harga'], 0, ',', '.'); ?></p>
+                                <p>Waktu Tambah: <?php echo htmlspecialchars($row['WaktuTambah']); ?></p>
+                                <p>Status: <?php echo $row['Tersedia'] ? 'Tersedia' : 'Habis'; ?></p>
+                                <p>Aksi: 
+                                    <a href="edit-menu.php?id=<?php echo $row['MenuID']; ?>">Edit</a> | 
+                                    <a href="../php/delete-menu.php?id=<?php echo $row['MenuID']; ?>" onclick="return confirm('Yakin ingin menghapus menu ini?')">Hapus</a>
+                                </p>
+                            </div>
+                        </div>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <p>Tidak ada menu tersedia.</p>
+                <?php endif; ?>
             </div>
         </section>
-        
-     </main>
+    </main>
+
     <footer>
         <p>Version: <?php echo $version_info; ?></p>
     </footer>
