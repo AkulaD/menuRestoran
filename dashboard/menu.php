@@ -1,5 +1,11 @@
 <?php 
 include '../php/config.php';
+
+session_start();
+if (!isset($_SESSION['username'])) {
+    header('location: ../index.html');
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -22,7 +28,7 @@ include '../php/config.php';
             </div>
             <div class="right-nav">
                 <ul>
-                    <li><a href="logout.php">Logout</a></li>
+                    <li><a href="../php/logout.php">Logout</a></li>
                 </ul>
             </div>
         </section>

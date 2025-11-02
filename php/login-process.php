@@ -19,10 +19,10 @@ if (isset($users[$username]) && $users[$username]['password'] === $password) {
     $_SESSION['level'] = $users[$username]['level'];
     $level = $_SESSION['level'];
 
-    if ($level == 1) {
+    if ($level == 2) {
         header('Location: ../dashboard/dashboard.php');
         exit;
-    } elseif ($level == 2) {
+    } elseif ($level == 1) {
         header('Location: ../menu/index.html');
         exit;
     } else {
