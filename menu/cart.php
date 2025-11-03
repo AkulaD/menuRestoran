@@ -2,7 +2,7 @@
 include '../php/config.php';
 session_start();
 
-if (!isset($_SESSION['username'])) {
+if(!isset($_SESSION['username'])) {
     header('location: ../index.html');
     exit;
 }
@@ -31,15 +31,26 @@ foreach ($_SESSION['cart'] as $id => $item) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nama'])) {
     $nama = $conn->real_escape_string($_POST['nama']);
-    $nomer_bangku = $conn->real_escape_string($_POST['nomer_bangku']);
+    $tipe = $_POST['tipe-pesanan'];
+    $nomor_bangku = ($tipe === 'Dine In') ? $conn->real_escape_string($_POST['nomor-bangku']) : null;
     $catatan = $conn->real_escape_string($_POST['catatan']);
     $total = $total_harga;
+    $statusBayar = 0;
+    $kodeBayar = rand(1000, 9999);
 
-    $sql = "INSERT INTO Pemesanan (PelangganNama, NomerBangku, TotalHarga, Catatan)
-            VALUES ('$nama', '$nomer_bangku', '$total', '$catatan')";
+    $sql = "INSERT INTO Pemesanan (PelangganNama, NomerBangku, TotalHarga, Catatan, Status, statusBayar, kodeBayar)
+            VALUES ('$nama', '$nomor_bangku', '$total', '$catatan', 'Baru', '$statusBayar', '$kodeBayar')";
     if ($conn->query($sql)) {
+        $pemesanan_id = $conn->insert_id;
+        foreach ($_SESSION['cart'] as $id => $item) {
+            $jumlah = $item['jumlah'];
+            $harga = $menu_data[$id]['Harga'];
+            $subtotal = $harga * $jumlah;
+            $conn->query("INSERT INTO DetailPemesanan (PemesananID, MenuID, Kuantitas, Subtotal)
+                          VALUES ('$pemesanan_id', '$id', '$jumlah', '$subtotal')");
+        }
         unset($_SESSION['cart']);
-        echo "<script>alert('Pesanan berhasil dibuat!'); window.location='index.php';</script>";
+        echo "<script>alert('Pesanan berhasil dibuat! Kode bayar Anda: $kodeBayar'); window.location='success-cart.php';</script>";
         exit;
     } else {
         echo "<script>alert('Gagal menyimpan pesanan.');</script>";
@@ -52,8 +63,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nama'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Keranjang - Restoran</title>
-    <link rel="stylesheet" href="../data/css/menu.css">
-    <script src="../data/js/script.js" defer></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const selectTipe = document.getElementById("tipe-pesanan");
+            const inputBangku = document.getElementById("nomor-bangku-container");
+            selectTipe.addEventListener("change", () => {
+                inputBangku.style.display = (selectTipe.value === "Dine In") ? "block" : "none";
+            });
+        });
+    </script>
 </head>
 <body>
     <h1>Keranjang Anda</h1>
@@ -68,33 +86,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nama'])) {
             </div>
         <?php endforeach; ?>
     </section>
-
     <h3>Total Harga Keseluruhan: Rp<?php echo number_format($total_harga, 0, ',', '.'); ?></h3>
-
     <form method="POST">
         <label>Nama Pelanggan:</label><br>
         <input type="text" name="nama" required><br><br>
-
         <label>Tipe Pesanan:</label><br>
         <select name="tipe-pesanan" id="tipe-pesanan" required>
             <option value="">-- Pilih --</option>
             <option value="Dine In">Dine In</option>
             <option value="Take Away">Take Away</option>
         </select><br><br>
-
         <div id="nomor-bangku-container" style="display:none;">
             <label>Nomor Bangku:</label><br>
-            <input type="number" name="nomor-bangku" min="1" placeholder="Masukkan nomor bangku">
-            <br><br>
+            <input type="number" name="nomor-bangku" min="1" placeholder="Masukkan nomor bangku"><br><br>
         </div>
-
-
         <label>Catatan:</label><br>
         <textarea name="catatan"></textarea><br><br>
-
         <button type="submit">Selesaikan Pesanan</button>
     </form>
-
     <footer>
         <a href="index.php">Kembali ke Menu</a>
     </footer>
