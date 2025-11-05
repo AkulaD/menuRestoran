@@ -45,6 +45,7 @@ foreach ($_SESSION['cart'] as $item) {
     <title>Menu - Restoran</title>
     <link rel="stylesheet" href="../data/css/menu.css">
     <script src="../data/js/script.js" defer></script>
+    <link rel="stylesheet" href="../data/css/index.css">
 </head>
 <body>
     <nav>
